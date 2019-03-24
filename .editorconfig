@@ -1,0 +1,17 @@
+root = true
+
+[*]
+insert_final_newline = true
+trim_trailing_whitespace = true
+charset = utf-8
+
+[*.{yaml,yml,json}]
+indent_size = 2
+tab_width = 2
+indent_style = space
+
+[*.hs]
+tab_width = 2
+indent_size = 2
+indent_style = space
+

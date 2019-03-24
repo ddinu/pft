@@ -1,0 +1,70 @@
+name: pft
+version: 0.0.1
+synopsis: Personal Finance Tools
+description: Simple command line utilities to analyze personal investments.
+maintainer: Daniel Dinu <daniel@danieldinu.com>
+copyright: (C) 2019 Daniel Dinu
+license: GPL-3.0-only
+stability: experimental
+homepage: https://github.com/ddinu/pft
+github: ddinu/pft
+license-file: LICENSE
+spec-version: 0.30.0
+build-type: Simple
+
+
+dependencies:
+  - base >= 4.12
+  - bytestring == 0.10.*
+  - cereal == 0.5.*
+  - mtl == 2.2.*
+  - text == 1.2.*
+  - time == 1.8.*
+  - transformers == 0.5.*
+  - unordered-containers == 0.2.*
+  - vector == 0.12.*
+
+
+library:
+  source-dirs: src
+  dependencies:
+    - cassava == 0.5.*
+    - direct-sqlite == 2.3.*
+    - http-conduit == 2.3.*
+    - http-types == 0.12.*
+    - filepath == 1.4.*
+    - yaml == 0.11.*
+
+
+executables:
+  list:
+    source-dirs: app/list
+    main: Main.hs
+    dependencies:
+      - pft
+      - optparse-applicative == 0.14.*
+
+  benchmark:
+    source-dirs: app/benchmark
+    main: Main.hs
+    dependencies:
+      - pft
+      - criterion == 1.5.*
+      - optparse-applicative == 0.14.*
+
+
+tests:
+  spec:
+    main: Spec.hs
+    source-dirs:
+      - test
+    build-tools:
+      - hspec-discover
+    dependencies:
+      - pft
+      - hspec == 2.6.*
+      - QuickCheck == 2.12.*
+
+
+ghc-options: -Wall -Wincomplete-uni-patterns -Wincomplete-record-updates
+             -Wredundant-constraints
