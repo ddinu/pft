@@ -9,16 +9,17 @@ import Financial.Eod.Record (Record (..))
 import Financial.Symbol.Ticker (Ticker)
 
 
--- | Position and its price history.
+-- | Portfolio position.
 data Position = Position {
   ticker :: Ticker,
+  quantity :: Int,
   history :: V.Vector Record
-} deriving Show
+} deriving (Show, Eq)
 
 
 -- | Portfolio of positions and price histories.
 newtype Portfolio = Portfolio [Position]
-  deriving Show
+  deriving (Show, Eq)
 
 
 {-|
@@ -28,16 +29,17 @@ newtype Portfolio = Portfolio [Position]
 
   Returns Nothing if there is no common history for any tickers.
 -}
-portfolioOf :: [(Ticker, [Record])] -> Maybe Portfolio
+portfolioOf :: [(Ticker, Int, [Record])] -> Maybe Portfolio
 portfolioOf ps
-    | null ps || any (null . snd) ps = Nothing
+    | null ps || any (null . records) ps = Nothing
     | otherwise =
-        let records = map snd ps
-            minDate = minCommonDate records
-            maxDate = maxCommonDate records
-        in Portfolio <$> forM ps (\(t, rs) -> Position t . V.fromList <$> alignTo minDate maxDate rs)
+        let rs = map records ps
+            minDate = minCommonDate rs
+            maxDate = maxCommonDate rs
+        in Portfolio <$> forM ps (\(t, q, rs') -> Position t q . V.fromList <$> alignTo minDate maxDate rs')
   where
-    alignTo minDate' maxDate' = notEmpty . filter (\r -> date r < minDate' && date r > maxDate')
+    alignTo minDate' maxDate' = notEmptyHistory . filter (\r -> date r >= minDate' && date r <= maxDate')
     minCommonDate = maximum . map (date . head)
     maxCommonDate = minimum . map (date . last)
-    notEmpty v | null v = Nothing | otherwise = Just v
+    notEmptyHistory v | null v = Nothing | otherwise = Just v
+    records (_, _, rs') = rs'
