@@ -1,2 +1,3 @@
+# Get your API key from AlphaVantage: https://www.alphavantage.co/support/#api-key
 AlphaVantageApiKey: ""
 StoreRoot: "/path/to/data/dir"
