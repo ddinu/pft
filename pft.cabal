@@ -1,0 +1,143 @@
+cabal-version: 2.2
+
+-- This file has been generated from package.yaml by hpack version 0.31.0.
+--
+-- see: https://github.com/sol/hpack
+--
+-- hash: 575581a1a906faf63114a73b257cfc5bcecf812b45700a2bd1a3741e75805b23
+
+name:           pft
+version:        0.0.1
+synopsis:       Personal Finance Tools
+description:    Simple command line utilities to analyze personal investments.
+stability:      experimental
+homepage:       https://github.com/ddinu/pft
+bug-reports:    https://github.com/ddinu/pft/issues
+maintainer:     Daniel Dinu <daniel@danieldinu.com>
+copyright:      (C) 2019 Daniel Dinu
+license:        GPL-3.0-only
+license-file:   LICENSE
+build-type:     Simple
+
+source-repository head
+  type: git
+  location: https://github.com/ddinu/pft
+
+library
+  exposed-modules:
+      Common.Error
+      Common.Http
+      Common.Serialize
+      Extra.Data.Time
+      Financial.Eod.AlphaVantage
+      Financial.Eod.Data
+      Financial.Eod.Record
+      Financial.Eod.Store
+      Financial.Portfolio
+      Financial.Symbol.Ticker
+      FinancialData
+      IO.Config
+      IO.Data
+      IO.Http
+      IO.SqliteEodStore
+      IO.SqliteEodStoreData
+      IO.Time
+  other-modules:
+      Paths_pft
+  hs-source-dirs:
+      src
+  ghc-options: -Wall -Wincomplete-uni-patterns -Wincomplete-record-updates -Wredundant-constraints
+  build-depends:
+      base >=4.12
+    , bytestring ==0.10.*
+    , cassava ==0.5.*
+    , cereal ==0.5.*
+    , direct-sqlite ==2.3.*
+    , filepath ==1.4.*
+    , http-conduit ==2.3.*
+    , http-types ==0.12.*
+    , mtl ==2.2.*
+    , text ==1.2.*
+    , time ==1.8.*
+    , transformers ==0.5.*
+    , unordered-containers ==0.2.*
+    , vector ==0.12.*
+    , yaml ==0.11.*
+  default-language: Haskell2010
+
+executable benchmark
+  main-is: Main.hs
+  other-modules:
+      Paths_pft
+  hs-source-dirs:
+      app/benchmark
+  ghc-options: -Wall -Wincomplete-uni-patterns -Wincomplete-record-updates -Wredundant-constraints
+  build-depends:
+      base >=4.12
+    , bytestring ==0.10.*
+    , cereal ==0.5.*
+    , criterion ==1.5.*
+    , mtl ==2.2.*
+    , optparse-applicative ==0.14.*
+    , pft
+    , text ==1.2.*
+    , time ==1.8.*
+    , transformers ==0.5.*
+    , unordered-containers ==0.2.*
+    , vector ==0.12.*
+  default-language: Haskell2010
+
+executable list
+  main-is: Main.hs
+  other-modules:
+      Paths_pft
+  hs-source-dirs:
+      app/list
+  ghc-options: -Wall -Wincomplete-uni-patterns -Wincomplete-record-updates -Wredundant-constraints
+  build-depends:
+      base >=4.12
+    , bytestring ==0.10.*
+    , cereal ==0.5.*
+    , mtl ==2.2.*
+    , optparse-applicative ==0.14.*
+    , pft
+    , text ==1.2.*
+    , time ==1.8.*
+    , transformers ==0.5.*
+    , unordered-containers ==0.2.*
+    , vector ==0.12.*
+  default-language: Haskell2010
+
+test-suite spec
+  type: exitcode-stdio-1.0
+  main-is: Spec.hs
+  other-modules:
+      Common.ErrorSpec
+      Common.HttpSpec
+      Common.SerializeSpec
+      Extra.Data.TimeSpec
+      Financial.Eod.AlphaVantageSpec
+      Financial.Eod.DataSpec
+      Financial.Eod.RecordSpec
+      Financial.PortfolioSpec
+      Financial.Symbol.TickerSpec
+      Paths_pft
+  hs-source-dirs:
+      test
+  ghc-options: -Wall -Wincomplete-uni-patterns -Wincomplete-record-updates -Wredundant-constraints
+  build-tool-depends:
+      hspec-discover:hspec-discover
+  build-depends:
+      QuickCheck ==2.12.*
+    , base >=4.12
+    , bytestring ==0.10.*
+    , cereal ==0.5.*
+    , hspec ==2.6.*
+    , mtl ==2.2.*
+    , pft
+    , text ==1.2.*
+    , time ==1.8.*
+    , transformers ==0.5.*
+    , unordered-containers ==0.2.*
+    , vector ==0.12.*
+  default-language: Haskell2010
