@@ -15,6 +15,7 @@ data Config = Config {
         storeRoot :: FilePath
       }
 
+
 instance Yaml.FromJSON Config where
   parseJSON = Yaml.withObject "Data" $ \v -> Config
     <$> v .: "AlphaVantageApiKey"

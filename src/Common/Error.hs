@@ -16,4 +16,5 @@ newtype Error = Error String
 instance Show Error where
   show (Error message) = message
 
+
 instance Exception Error

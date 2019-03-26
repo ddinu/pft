@@ -24,7 +24,7 @@ import qualified Financial.Eod.Record as Record
 import Financial.Symbol.Ticker (Ticker)
 
 
--- | Typeclass for
+-- | Typeclass for getting the API key.
 class Monad m => HasAlphaVantageApiKey m where
   getAlphaVantageApiKey :: m String
 
@@ -47,7 +47,7 @@ type FetchConstraint m = (MonadError Error m, Http.Request m, HasAlphaVantageApi
 
   The 'ticker' argument specifies which ticker you want and the 'numRecords'
   argument specifies how many records to retrieve. This function may retrieve
-  more records than requested.
+  more or fewer records than requested.
 
   The current day is included but may have partial data.
 -}
@@ -72,7 +72,7 @@ fetchRecords ticker numRecords = do
       else Http.throttle throttleDuration >> tryFetch (n - 1) url
 
 
--- | Return a list of URLs that can be used to fetch records.
+-- | Return an URL that can be used to fetch records.
 makeUrl :: String -> Ticker -> Word -> String
 makeUrl apiKey ticker numRecords =
     "https://www.alphavantage.co/query?function=TIME_SERIES_DAILY_ADJUSTED&datatype=csv" &:
@@ -85,7 +85,7 @@ makeUrl apiKey ticker numRecords =
     a =: b = a ++ "=" ++ b
 
 
--- | Parse all valid records from a byte string.
+-- | Parse all valid records from a CSV byte string.
 parseRecords :: BSL.ByteString -> [Record.Record]
 parseRecords = catMaybes . parseAll
   where

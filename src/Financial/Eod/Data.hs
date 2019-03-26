@@ -21,7 +21,7 @@ import Financial.Symbol.Ticker (Ticker)
 type GetConstraint m = (MonadError Error m, Request m, Store m, Time.HasTime m, HasAlphaVantageApiKey m)
 
 
--- | Get a all records in a date range.
+-- | Get a all available records in a date range.
 get :: GetConstraint m => Ticker -> Time.Range -> m [Record.Record]
 get ticker timeRange = rights <$> do
     today <- Time.utctDay <$> Time.currentTime

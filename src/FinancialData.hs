@@ -29,7 +29,8 @@ import Financial.Symbol.Ticker (toTicker, Ticker)
 
 {-|
   Retrieve EOD financial records for the specified ticker and the specified
-  number of week days (including weekends).
+  number of week days (non-trading days will not have data but they are
+  counted).
 -}
 getEod :: Ticker -> Range -> Data [Record]
 getEod = EOD.get

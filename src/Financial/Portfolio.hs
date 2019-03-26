@@ -23,11 +23,9 @@ newtype Portfolio = Portfolio [Position]
 
 
 {-|
-  Create a portfolio from a list of ticker-history pairs. The EOD histories
-  are aligned to the shortest common period and only tickers that have
-  a common history are returned.
-
-  Returns Nothing if there is no common history for any tickers.
+  Create a portfolio from a list of (ticker, quantity, history) triples. The EOD
+  histories are aligned to the shortest common period. If no common period
+  exists, this function will return Nothing.
 -}
 portfolioOf :: [(Ticker, Int, [Record])] -> Maybe Portfolio
 portfolioOf ps

@@ -21,7 +21,7 @@ newtype StatusCode = StatusCode Word
   deriving (Eq, Show)
 
 
--- | For how long to throttle requests.
+-- | Duration of request throttling.
 type ThrottleDuration = Time.DiffTime
 
 

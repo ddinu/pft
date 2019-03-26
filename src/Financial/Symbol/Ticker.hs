@@ -17,8 +17,10 @@ import qualified Data.Text.Encoding as TE
 newtype Ticker = Ticker BSS.ShortByteString
   deriving (Eq)
 
+
 instance Show Ticker where
   show (Ticker s) = T.unpack . TE.decodeUtf8 $ BSS.fromShort s
+
 
 instance Serialize Ticker where
   put (Ticker t) = put t

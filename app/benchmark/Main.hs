@@ -25,6 +25,7 @@ optParser = O.strOption
               <> O.value defaultConfigFile
               <> O.help "Configuration file location" )
 
+
 run :: Integer -> T.Text -> IO [Fin.Record]
 run numDays ticker = do
     configFile <- O.execParser $ O.info (optParser <**> O.helper) (
