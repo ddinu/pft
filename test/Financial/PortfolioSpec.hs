@@ -7,7 +7,7 @@ import qualified Data.Time as Time
 import qualified Data.Vector as V
 import Test.Hspec (describe, it, shouldBe, shouldSatisfy, Spec)
 import Financial.Eod.Record (Record (..))
-import Financial.Portfolio (portfolioOf, Position (..), Portfolio (..))
+import Financial.Portfolio (portfolioOf, positions, Position (..))
 import Financial.Symbol.Ticker (toTicker)
 
 
@@ -40,10 +40,10 @@ spec = describe "Financial.Portfolio" $ do
       ] `shouldSatisfy` isNothing
 
     it "returns portfolio with histories aligned" $
-      portfolioOf [
+      positions (fromJust $ portfolioOf [
         (tickers !! 0, 1, [records !! 0, records !! 1, records !! 2]),
         (tickers !! 1, 1, [records !! 1, records !! 2, records !! 3])
-      ] `shouldBe` Just (Portfolio [
+      ]) `shouldBe` [
         Position {
           ticker = tickers !! 0,
           quantity = 1,
@@ -54,4 +54,21 @@ spec = describe "Financial.Portfolio" $ do
           quantity = 1,
           history = V.fromList [records !! 1, records !! 2]
         }
-      ])
+      ]
+
+    it "removes records from all positions if they are missing from one or positions" $
+      positions (fromJust $ portfolioOf [
+        (tickers !! 0, 1, [records !! 0, records !! 2]),
+        (tickers !! 1, 1, [records !! 0, records !! 1, records !! 2])
+      ]) `shouldBe` [
+        Position {
+          ticker = tickers !! 0,
+          quantity = 1,
+          history = V.fromList [records !! 0, records !! 2]
+        },
+        Position {
+          ticker = tickers !! 1,
+          quantity = 1,
+          history = V.fromList [records !! 0, records !! 2]
+        }
+      ]

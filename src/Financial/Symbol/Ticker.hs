@@ -2,6 +2,7 @@
   A financial instrument's ticker (this is a component of the instrument's
   symbol).
 -}
+{-# LANGUAGE GeneralizedNewtypeDeriving #-}
 module Financial.Symbol.Ticker (
   Ticker,
   toTicker
@@ -9,13 +10,14 @@ module Financial.Symbol.Ticker (
 
 import Data.Serialize (Serialize (..))
 import qualified Data.ByteString.Short as BSS
+import qualified Data.Hashable as H
 import qualified Data.Text as T
 import qualified Data.Text.Encoding as TE
 
 
 -- | Instrument ticker (i.e. AAPL, MSFT, AMZN).
 newtype Ticker = Ticker BSS.ShortByteString
-  deriving (Eq)
+  deriving (Eq, H.Hashable)
 
 
 instance Show Ticker where

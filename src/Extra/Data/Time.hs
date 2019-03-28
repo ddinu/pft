@@ -18,6 +18,7 @@ module Extra.Data.Time (
 
 import qualified Data.Ix as I
 import qualified Data.ByteString as BS
+import Data.Hashable (Hashable (..))
 import Data.Serialize (Serialize (..))
 import qualified Data.Text as T
 import qualified Data.Text.Encoding as TE
@@ -93,3 +94,7 @@ days r = I.range (rangeStart r, rangeEnd $ r { rangeStart = Time.addDays (-1) $ 
 instance Serialize Time.Day where
   put d = put $ Time.toGregorian d
   get = (uncurry . uncurry) Time.fromGregorian <$> get
+
+
+instance Hashable Time.Day where
+  hashWithSalt salt = hashWithSalt salt . fromEnum

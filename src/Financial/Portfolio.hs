@@ -1,10 +1,16 @@
 {-|
   Financial portfolio with positions and their histories.
 -}
-module Financial.Portfolio (portfolioOf, Position (..), Portfolio (..)) where
+module Financial.Portfolio (
+  portfolioOf,
+  positions,
+  Portfolio,
+  Position (..)
+) where
 
-import Control.Monad (forM)
+import qualified Data.HashSet as Set
 import qualified Data.Vector as V
+import Extra.Data.Time ()
 import Financial.Eod.Record (Record (..))
 import Financial.Symbol.Ticker (Ticker)
 
@@ -22,22 +28,37 @@ newtype Portfolio = Portfolio [Position]
   deriving (Show, Eq)
 
 
+-- | Get the positions of a portfolio as a list.
+positions :: Portfolio -> [Position]
+positions (Portfolio ps) = ps
+
+
 {-|
-  Create a portfolio from a list of (ticker, quantity, history) triples. The EOD
-  histories are aligned to the shortest common period. If no common period
-  exists, this function will return Nothing.
+  Create a portfolio from a list of (ticker, quantity, history) triples.
+
+  The EOD price histories of all positions are aligned to the shortest common
+  period and any records that have dates that which are not common to all
+  positions in the portfolio, are discarded.
+
+  If no common period exists, this function returns Nothing. In other words
+  all positions must have price histories for the same number of days and
+  for at least one day.
 -}
 portfolioOf :: [(Ticker, Int, [Record])] -> Maybe Portfolio
 portfolioOf ps
     | null ps || any (null . records) ps = Nothing
     | otherwise =
-        let rs = map records ps
-            minDate = minCommonDate rs
-            maxDate = maxCommonDate rs
-        in Portfolio <$> forM ps (\(t, q, rs') -> Position t q . V.fromList <$> alignTo minDate maxDate rs')
+        let comDates = commonDates ps
+        in Portfolio <$> ensureHistories (flip map ps $
+              \(t, q, rs) -> Position {
+                                ticker = t,
+                                quantity = q,
+                                history = commonRecords comDates rs
+                              })
   where
-    alignTo minDate' maxDate' = notEmptyHistory . filter (\r -> date r >= minDate' && date r <= maxDate')
-    minCommonDate = maximum . map (date . head)
-    maxCommonDate = minimum . map (date . last)
-    notEmptyHistory v | null v = Nothing | otherwise = Just v
     records (_, _, rs') = rs'
+    commonDates ps' = foldl1 Set.intersection (flip map ps' $ Set.fromList . map date . records)
+    commonRecords comDates' = V.fromList . filter (flip Set.member comDates' . date)
+    ensureHistories ps'
+      | any null (map history ps') = Nothing
+      | otherwise = Just ps'
