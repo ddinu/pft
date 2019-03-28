@@ -66,6 +66,7 @@ tests:
       - pft
       - hspec == 2.6.*
       - QuickCheck == 2.12.*
+      - quickcheck-instances == 0.3.*
 
 
 ghc-options: -Wall -Wincomplete-uni-patterns -Wincomplete-record-updates

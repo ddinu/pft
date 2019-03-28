@@ -4,9 +4,10 @@ module Extra.Data.TimeSpec where
 import Data.Either (fromRight)
 import qualified Data.Time as Time
 import Test.Hspec (describe, it, shouldBe, Spec)
-import Test.QuickCheck (property)
+import Test.QuickCheck (property, (==>))
 import Common.Serialize
 import Extra.Data.Time
+import Extra.Data.ArbitraryTime ()
 
 
 spec :: Spec
@@ -31,23 +32,20 @@ spec = describe "Time" $ do
     \x -> toMicroseconds (Time.secondsToDiffTime x) == (x * 1000 * 1000)
 
   describe "Range" $ do
-    let range = Range {
-                  rangeStart = Time.fromGregorian 2017 5 21,
-                  rangeSize = 5
-                }
+    it "rangeEnd = rangeStart + rangeSize" $ property $
+      \x -> rangeEnd x == Time.addDays (fromIntegral $ rangeSize x) (rangeStart x)
 
-    it "rangeEnd returns one day past the end of the range" $
-      rangeEnd range `shouldBe` Time.fromGregorian 2017 5 26
+    it "can be shown" $ property $
+      \x -> not . null $ show (x :: Range)
 
-    it "can be shown" $
-      null (show range) `shouldBe` False
+    it "ranges with the same start and size are equal" $ property $
+      \x -> x == Range {
+                    rangeStart = rangeStart x,
+                    rangeSize = rangeSize x
+                  }
 
-    it "a ranges with the same start and size are equal" $ do
-      let range' = Range {
-                      rangeStart = rangeStart range,
-                      rangeSize = rangeSize range
-                    }
-      (range' == range) `shouldBe` True
+    it "days returns all days in order" $ property $
+      \x -> days x == [rangeStart x .. (Time.addDays (-1) $ rangeEnd x)]
 
 
   describe "notWeekend" $ do
@@ -73,20 +71,20 @@ spec = describe "Time" $ do
       notWeekend (Time.fromGregorian 2019 3 17) `shouldBe` False
 
   describe "inRange" $ do
-    let range = Range { rangeStart = Time.fromGregorian 2019 3 10, rangeSize = 5 }
+    it "inRange (rangeStart - 1) == False" $ property $
+      \x -> not $ inRange x (Time.addDays (-1) $ rangeStart x)
 
-    it "returns false for the day before the range" $
-      inRange range (pred $ rangeStart range) `shouldBe` False
+    it "inRange rangeEnd == False" $ property $
+      \x -> not $ inRange x (rangeEnd x)
 
-    it "returns false for the day after the range" $
-      inRange range (rangeEnd range) `shouldBe` False
+    it "inRange rangeStart == True" $ property $
+      \x -> rangeSize x > 0 ==> inRange x $ rangeStart x
 
-    it "returns true for the first day of the range" $
-      inRange range (rangeStart range) `shouldBe` True
+    it "zero sized ranges cannot contain their rangeStart" $ property $
+      \x -> not . inRange x { rangeSize = 0 } $ rangeStart x
 
-    it "returns true for the last day of thre range" $
-      inRange range (pred $ rangeEnd range) `shouldBe` True
+    it "inRange (rangeEnd - 1) == True" $ property $
+      \x -> rangeSize x > 0 ==> inRange x (Time.addDays (-1) $ rangeEnd x)
 
-  it "Time.Day can be serialized" $ do
-    let d = Time.fromGregorian 2015 5 10
-    (fromRight undefined . deserialize . serialize) d `shouldBe` d
+  it "Time.Day can be serialized" $ property $
+    \x -> (fromRight undefined . deserialize . serialize) x == (x :: Time.Day)

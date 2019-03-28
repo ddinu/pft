@@ -4,7 +4,7 @@ cabal-version: 2.2
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: d35651c61da27b6ab6836e67b218646c989951607bd0ec082f62caee6214efae
+-- hash: ba29025ffe8eda2803698f867e2397e058af130867dd856cc71d75e59f7a7482
 
 name:           pft
 version:        0.0.1
@@ -119,8 +119,10 @@ test-suite spec
       Common.ErrorSpec
       Common.HttpSpec
       Common.SerializeSpec
+      Extra.Data.ArbitraryTime
       Extra.Data.TimeSpec
       Financial.Eod.AlphaVantageSpec
+      Financial.Eod.ArbitraryRecord
       Financial.Eod.DataSpec
       Financial.Eod.RecordSpec
       Financial.MPT.ComputeSpec
@@ -140,6 +142,7 @@ test-suite spec
     , hspec ==2.6.*
     , mtl ==2.2.*
     , pft
+    , quickcheck-instances ==0.3.*
     , text ==1.2.*
     , time ==1.8.*
     , transformers ==0.5.*
