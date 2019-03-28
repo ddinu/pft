@@ -4,7 +4,7 @@ cabal-version: 2.2
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: 575581a1a906faf63114a73b257cfc5bcecf812b45700a2bd1a3741e75805b23
+-- hash: d35651c61da27b6ab6836e67b218646c989951607bd0ec082f62caee6214efae
 
 name:           pft
 version:        0.0.1
@@ -33,6 +33,8 @@ library
       Financial.Eod.Data
       Financial.Eod.Record
       Financial.Eod.Store
+      Financial.MPT.Compute
+      Financial.MPT.Return
       Financial.Portfolio
       Financial.Symbol.Ticker
       FinancialData
@@ -58,6 +60,7 @@ library
     , http-conduit ==2.3.*
     , http-types ==0.12.*
     , mtl ==2.2.*
+    , statistics ==0.15.*
     , text ==1.2.*
     , time ==1.8.*
     , transformers ==0.5.*
@@ -120,6 +123,7 @@ test-suite spec
       Financial.Eod.AlphaVantageSpec
       Financial.Eod.DataSpec
       Financial.Eod.RecordSpec
+      Financial.MPT.ComputeSpec
       Financial.PortfolioSpec
       Financial.Symbol.TickerSpec
       Paths_pft
