@@ -65,6 +65,7 @@ tests:
     dependencies:
       - pft
       - hspec == 2.6.*
+      - hspec-core == 2.6.*
       - QuickCheck == 2.12.*
       - quickcheck-instances == 0.3.*
 

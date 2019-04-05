@@ -20,7 +20,7 @@ spec :: Spec
 spec = describe "Financial.DataSource.AlphaVantage" $ do
   let ticker = fromJust $ Ticker.toTicker "XYZ"
 
-  let record = Record.Record {
+  let record = Record.Record { -- Must match the mock data below.
                     Record.date = Time.fromGregorian 2019 2 6,
                     Record.openingPrice = 107,
                     Record.closingPrice = 106.03,
@@ -117,7 +117,7 @@ evalEnv responses = flip S.evalState responses . E.runExceptT . unEnv
 
 instance Http.Request Env where
   get url = do
-    when (length url == 0) (error "URL is null") -- Force evaluation of 'url'
+    when (null url) (error "URL is null") -- Force evaluation of 'url'
     s <- S.get
     if null s then return (Http.StatusCode 500, Http.Body BSL.empty)
     else do

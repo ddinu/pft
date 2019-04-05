@@ -1,7 +1,6 @@
 {-# LANGUAGE GeneralizedNewtypeDeriving, OverloadedStrings, ScopedTypeVariables #-}
 module Financial.Eod.DataSpec (spec) where
 
-import Test.Hspec
 import Control.Monad (forM, when)
 import qualified Control.Monad.Except as E
 import qualified Control.Monad.State.Lazy as S
@@ -11,6 +10,9 @@ import qualified Data.ByteString.Lazy as BSL
 import qualified Data.Time.Calendar as Time
 import qualified Data.Time.Clock as Time
 import qualified Data.HashMap.Strict as Map
+import qualified Data.HashSet as Set
+import Test.Hspec
+import Test.QuickCheck (property)
 import Common.Error (Error (..))
 import qualified Common.Http as Http
 import qualified Extra.Data.Time as Time
@@ -19,6 +21,8 @@ import qualified Financial.Eod.Store as Store
 import qualified Financial.Eod.Data as Data
 import qualified Financial.Eod.Record as Record
 import Financial.Symbol.Ticker (toTicker, Ticker)
+
+import Financial.Eod.ArbitraryRecord (RecordList (..))
 
 
 spec :: Spec
@@ -98,16 +102,18 @@ spec = describe "Financial.Eod.Data" $ do
     it "returns an empty list if both lists are empty" $
       Data.stitch [] [] `shouldBe` []
 
-    it "returns the second list if the first one is empty" $
-      Data.stitch [] [record1] `shouldBe` [record1]
+    it "returns the second list if the first one is empty" $ property $
+      \x -> Data.stitch [] [x] == [x]
 
-    it "returns the first list if the second one is empty" $
-      Data.stitch [record1] [] `shouldBe` [record1]
+    it "returns the first list if the second one is empty" $ property $
+      \x -> Data.stitch [x] [] == [x]
 
-    it "returns first list if there are no gaps" $ do
-      let merged = Data.stitch [record1, record2, record3]
-                               [empty1, empty2, empty3]
-      merged `shouldBe` [record1, record2, record3]
+    it "dates (stitch x y) = dates (union x y)" $ property $
+      \x y -> Set.fromList (map Store.optionalRecordDate $ Data.stitch x y) ==
+                Set.union (Set.fromList $ map Store.optionalRecordDate x) (Set.fromList $ map Store.optionalRecordDate y)
+
+    it "returns first list if there are no gaps" $ property $
+      \(RecordList x) -> Data.stitch (map Right x) (map (Left . Record.date) x) == map Right x
 
     it "fills gaps with elements from the second list" $ do
       let merged = Data.stitch [record1, record3]

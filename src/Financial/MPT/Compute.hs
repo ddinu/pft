@@ -51,7 +51,10 @@ weights = do
     computeWeights = do
       positions' <- positions <$> portfolio
       let total = fromIntegral . sum $ map quantity positions'
-      return . Map.fromList $ map (\p -> (ticker p, (fromIntegral . quantity) p / total)) positions'
+      return . Map.fromList $ map (\p -> (ticker p, (fromIntegral . quantity) p @/ total)) positions'
+
+    _ @/ 0 = 0
+    a @/ b = a / b
 
 
 -- | Get the computation portfolio.

@@ -17,9 +17,9 @@ import Financial.Symbol.Ticker (Ticker)
 
 -- | Portfolio position.
 data Position = Position {
-  ticker :: Ticker,
-  quantity :: Int,
-  history :: V.Vector Record
+  ticker :: !Ticker,
+  quantity :: !Int,
+  history :: !(V.Vector Record)
 } deriving (Show, Eq)
 
 

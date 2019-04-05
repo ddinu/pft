@@ -45,3 +45,7 @@ instance Serialize Record where
       lowPrice = lowPrice',
       volume = volume'
     }
+
+
+instance Ord Record where
+  compare x y = compare (date x) (date y)

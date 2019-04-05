@@ -1,7 +1,7 @@
 module Common.HttpSpec (spec) where
 
 import Test.Hspec (describe, it, Spec)
-import Test.QuickCheck (property)
+import Test.QuickCheck (property, (==>))
 import Common.Http (StatusCode (..))
 
 
@@ -15,4 +15,4 @@ spec = describe "Common.Http" $
       \x -> StatusCode x == StatusCode x
 
     it "status codes with different values are different" $ property $
-      \x -> StatusCode x /= StatusCode (x + 1)
+      \x y -> x /= y ==> StatusCode x /= StatusCode y

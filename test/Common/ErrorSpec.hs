@@ -1,7 +1,7 @@
 module Common.ErrorSpec (spec) where
 
 import Test.Hspec (describe, it, Spec)
-import Test.QuickCheck (property)
+import Test.QuickCheck (property, (==>))
 import Common.Error
 
 
@@ -15,4 +15,4 @@ spec = describe "Common.Error" $
       \x -> Error x == Error x
 
     it "Errors with different messages are not equal" $ property $
-      \x -> Error x /= Error (x ++ "X")
+      \x y -> x /= y ==> Error x /= Error y

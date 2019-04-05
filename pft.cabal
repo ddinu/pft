@@ -4,7 +4,7 @@ cabal-version: 2.2
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: ba29025ffe8eda2803698f867e2397e058af130867dd856cc71d75e59f7a7482
+-- hash: 8746463e90dcab34e43d1bc228b9ceb691de44be07377396d5d29f8629d6c3d4
 
 name:           pft
 version:        0.0.1
@@ -29,6 +29,7 @@ library
       Common.Http
       Common.Serialize
       Extra.Data.Time
+      Extra.Data.Vector
       Financial.Eod.AlphaVantage
       Financial.Eod.Data
       Financial.Eod.Record
@@ -121,12 +122,15 @@ test-suite spec
       Common.SerializeSpec
       Extra.Data.ArbitraryTime
       Extra.Data.TimeSpec
+      Extra.Data.VectorSpec
+      Financial.ArbitraryPortfolio
       Financial.Eod.AlphaVantageSpec
       Financial.Eod.ArbitraryRecord
       Financial.Eod.DataSpec
       Financial.Eod.RecordSpec
       Financial.MPT.ComputeSpec
       Financial.PortfolioSpec
+      Financial.Symbol.ArbitraryTicker
       Financial.Symbol.TickerSpec
       Paths_pft
   hs-source-dirs:
@@ -140,6 +144,7 @@ test-suite spec
     , bytestring ==0.10.*
     , cereal ==0.5.*
     , hspec ==2.6.*
+    , hspec-core ==2.6.*
     , mtl ==2.2.*
     , pft
     , quickcheck-instances ==0.3.*

@@ -7,6 +7,7 @@ import Test.Hspec (describe, it, shouldBe, Spec)
 import Test.QuickCheck (property, (==>))
 import Common.Serialize
 import Extra.Data.Time
+
 import Extra.Data.ArbitraryTime ()
 
 
@@ -44,6 +45,12 @@ spec = describe "Time" $ do
                     rangeSize = rangeSize x
                   }
 
+    it "ranges with a different start are not equal" $ property $
+      \x y -> rangeStart x /= rangeStart y ==> x /= y { rangeSize = rangeSize x}
+
+    it "ranges with a different size are not equal" $ property $
+      \x y -> rangeSize x /= rangeSize y ==> x /= y { rangeStart = rangeStart x}
+
     it "days returns all days in order" $ property $
       \x -> days x == [rangeStart x .. (Time.addDays (-1) $ rangeEnd x)]
 
@@ -71,19 +78,19 @@ spec = describe "Time" $ do
       notWeekend (Time.fromGregorian 2019 3 17) `shouldBe` False
 
   describe "inRange" $ do
-    it "inRange (rangeStart - 1) == False" $ property $
+    it "inRange (rangeStart - 1) = False" $ property $
       \x -> not $ inRange x (Time.addDays (-1) $ rangeStart x)
 
-    it "inRange rangeEnd == False" $ property $
+    it "inRange rangeEnd = False" $ property $
       \x -> not $ inRange x (rangeEnd x)
 
-    it "inRange rangeStart == True" $ property $
+    it "inRange rangeStart = True" $ property $
       \x -> rangeSize x > 0 ==> inRange x $ rangeStart x
 
     it "zero sized ranges cannot contain their rangeStart" $ property $
       \x -> not . inRange x { rangeSize = 0 } $ rangeStart x
 
-    it "inRange (rangeEnd - 1) == True" $ property $
+    it "inRange (rangeEnd - 1) = True" $ property $
       \x -> rangeSize x > 0 ==> inRange x (Time.addDays (-1) $ rangeEnd x)
 
   it "Time.Day can be serialized" $ property $
